@@ -1,0 +1,79 @@
+Metadata-Version: 2.4
+Name: crypto-arbitrage-monitor
+Version: 0.1.0
+Summary: 국내/해외 거래소 간 암호화폐 차익거래 스프레드 실시간 모니터링
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: aiohttp>=3.9.0
+Requires-Dist: websockets>=12.0
+Requires-Dist: ccxt>=4.2.0
+Requires-Dist: pydantic>=2.5.0
+Requires-Dist: pydantic-settings>=2.1.0
+Requires-Dist: python-telegram-bot>=21.0
+Requires-Dist: python-dotenv>=1.0.0
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-asyncio; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: ruff; extra == "dev"
+
+# Crypto Arbitrage Monitor
+
+국내·해외 암호화폐 거래소 간 **현물 가격 차이(스프레드)**를 실시간으로 감지하여 차익거래 기회를 알려주는 모니터링 프로그램입니다.  
+자동 매매가 아닌 **정보 제공** 목적입니다.
+
+## 지원 거래소
+
+- **국내**: 업비트, 빗썸  
+- **해외**: Binance, Bybit, Gate.io  
+
+## 주요 기능
+
+- 실시간 호가(매수 1호가/매도 1호가) 수집 (WebSocket)
+- 거래소 간 스프레드(%) 자동 계산
+- 최소 수익률·코인 필터
+- 입출금 상태·네트워크 정보 표시
+- Gate.io 대출 가능 여부·금리 표시
+- 알림: 소리, 텔레그램
+
+## 요구사항
+
+- Python 3.10+
+- (선택) 텔레그램 봇 토큰·채팅 ID
+
+## 설치 및 실행
+
+```bash
+# 가상환경 생성 및 활성화
+python -m venv .venv
+.venv\Scripts\activate   # Windows
+# source .venv/bin/activate  # Linux/macOS
+
+# 의존성 설치
+pip install -r requirements.txt
+
+# 설정 (선택)
+copy .env.example .env
+# .env 편집
+
+# 실행
+python -m crypto_arbitrage_monitor
+```
+
+## 프로젝트 구조
+
+```
+src/crypto_arbitrage_monitor/
+  __init__.py
+  config.py           # 설정
+  logging_config.py   # 로깅
+  models.py           # 데이터 모델 (예정)
+  exchanges/          # 거래소 WebSocket (예정)
+  spread/             # 스프레드 계산 (예정)
+  alerts/             # 알림 (예정)
+  ui/                 # UI (예정)
+```
+
+## 라이선스
+
+MIT
