@@ -13,8 +13,5 @@ def print_settings(settings: Settings) -> None:
     print(f"  최소 거래금액(USD): {settings.min_trade_amount_usd or '미적용'}")
     print(f"  모니터링 코인: {settings.monitor_symbols or '전체'}")
     print(f"  소리 알림: {'ON' if settings.alert_sound_enabled else 'OFF'}")
-    print(f"  텔레그램 알림: {'ON' if settings.telegram_enabled else 'OFF'}")
-    if settings.telegram_enabled:
-        print(f"    - 채팅 ID: {settings.telegram_chat_id or '(미설정)'}")
     print("  (변경 시 .env 파일 수정 또는 환경 변수 설정)")
     print()

@@ -1,13 +1,25 @@
 """
 메인 모니터링 화면: 콘솔 테이블
-PRD: | 코인 | 거래소A | 거래소B | 매수가 | 매도가 | 스프레드 | 네트워크 | 출금상태 |
+표시 컬럼: 시간, 코인, 거래소A, 거래소B, 매수가, 매도가, 스프레드
 """
 
+import calendar
 import logging
 from collections import OrderedDict
-from typing import Dict, Optional
+from datetime import datetime
+from typing import Optional
 
 from crypto_arbitrage_monitor.models import ArbitrageOpportunity
+
+
+def _format_monitor_time(ts: datetime) -> str:
+    """UTC naive datetime → 로컬 시각 문자열 (HH:MM:SS)."""
+    try:
+        utc_sec = calendar.timegm(ts.timetuple()) + ts.microsecond / 1_000_000
+        local_dt = datetime.fromtimestamp(utc_sec)
+        return local_dt.strftime("%H:%M:%S")
+    except (OSError, ValueError):
+        return ts.strftime("%H:%M:%S")
 
 logger = logging.getLogger("crypto_arbitrage_monitor.ui")
 
@@ -21,14 +33,6 @@ class ConsoleMonitor:
     def __init__(self) -> None:
         # (symbol, exchange_buy, exchange_sell) -> opportunity
         self._rows: OrderedDict[tuple, ArbitrageOpportunity] = OrderedDict()
-        self._network: Dict[tuple, str] = {}  # (exchange, symbol) -> "TRC20" 등
-        self._withdraw: Dict[tuple, str] = {}  # (exchange, symbol) -> "가능"/"불가"
-
-    def set_network(self, exchange: str, symbol: str, network: str) -> None:
-        self._network[(exchange, symbol)] = network
-
-    def set_withdraw_status(self, exchange: str, symbol: str, status: str) -> None:
-        self._withdraw[(exchange, symbol)] = status
 
     def push(self, opportunity: ArbitrageOpportunity) -> None:
         key = (opportunity.symbol, opportunity.exchange_buy.value, opportunity.exchange_sell.value)
@@ -38,23 +42,19 @@ class ConsoleMonitor:
 
     def _header(self) -> str:
         return (
-            f"{'코인':<6} | {'거래소A':<10} | {'거래소B':<10} | {'매수가':>14} | {'매도가':>14} | {'스프레드':>8} | {'네트워크':<8} | {'출금상태':<8}"
+            f"{'시간':<8} | {'코인':<6} | {'거래소A':<10} | {'거래소B':<10} | "
+            f"{'매수가':>14} | {'매도가':>14} | {'스프레드':>8}"
         )
 
     def _sep(self) -> str:
-        return "-" * (6 + 10 + 10 + 14 + 14 + 8 + 8 + 8 + 8 * 4)
+        return "-" * (8 + 6 + 10 + 10 + 14 + 14 + 8 + 7 * 4)
 
     def _row(self, opp: ArbitrageOpportunity) -> str:
-        net_buy = self._network.get((opp.exchange_buy.value, opp.symbol), "-")
-        net_sell = self._network.get((opp.exchange_sell.value, opp.symbol), "-")
-        net = f"{net_buy}/{net_sell}"
-        wd_buy = self._withdraw.get((opp.exchange_buy.value, opp.symbol), "-")
-        wd_sell = self._withdraw.get((opp.exchange_sell.value, opp.symbol), "-")
-        wd = f"{wd_buy}/{wd_sell}"
+        # 네트워크/출금 상태/대출 정보는 현재 표시하지 않음
+        tstr = _format_monitor_time(opp.timestamp)
         return (
-            f"{opp.symbol:<6} | {opp.exchange_buy.value:<10} | {opp.exchange_sell.value:<10} | "
-            f"{opp.bid_price:>14,.0f} | {opp.ask_price:>14,.0f} | {opp.spread_percent:>7.2f}% | "
-            f"{net:<8} | {wd:<8}"
+            f"{tstr:<8} | {opp.symbol:<6} | {opp.exchange_buy.value:<10} | {opp.exchange_sell.value:<10} | "
+            f"{opp.bid_price:>14,.0f} | {opp.ask_price:>14,.0f} | {opp.spread_percent:>7.2f}%"
         )
 
     def print_table(self) -> None:
@@ -65,3 +65,7 @@ class ConsoleMonitor:
         for opp in self._rows.values():
             lines.append(self._row(opp))
         print("\n".join(lines))
+
+    def refresh_display(self) -> None:
+        """주기 갱신용. 콘솔에서는 print_table과 동일."""
+        self.print_table()

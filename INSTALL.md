@@ -48,7 +48,6 @@ cp .env.example .env    # Linux/macOS
 
 - `MIN_SPREAD_PERCENT`: 최소 수익률(%) — 이 값 이상일 때만 표시·알림 (기본 0.5)
 - `MONITOR_SYMBOLS`: 모니터링할 코인 (쉼표 구분, 비우면 BTC/ETH/USDT)
-- `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`: 텔레그램 알림 사용 시 필수
 
 ## 5. 실행
 
@@ -59,7 +58,13 @@ cp .env.example .env    # Linux/macOS
 python -m crypto_arbitrage_monitor
 ```
 
-또는 `src`를 PYTHONPATH에 넣어 실행:
+- **기본**: 데스크톱 창이 열리며, 차익거래 기회가 테이블로 표시됩니다. 창을 닫으면 종료됩니다.
+- **콘솔 모드**(터미널에만 출력):  
+  **Windows:** `set USE_CONSOLE=1` 후 `python -m crypto_arbitrage_monitor`  
+  **Linux/macOS:** `USE_CONSOLE=1 python -m crypto_arbitrage_monitor`  
+  종료: **Ctrl+C**
+
+`src`를 PYTHONPATH에 넣어 실행할 때:
 
 **Windows (PowerShell):**
 ```powershell
@@ -70,8 +75,6 @@ $env:PYTHONPATH="src"; python -m crypto_arbitrage_monitor
 ```bash
 PYTHONPATH=src python -m crypto_arbitrage_monitor
 ```
-
-종료: **Ctrl+C**
 
 ## 6. 테스트 실행
 
@@ -88,5 +91,4 @@ pytest tests/ -v
 - **거래소 연결 실패**  
   네트워크/방화벽을 확인하고, 해당 거래소 API 상태를 확인하세요.
 
-- **텔레그램 알림이 가지 않음**  
-  `.env`에 `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`가 올바른지 확인하세요.
+

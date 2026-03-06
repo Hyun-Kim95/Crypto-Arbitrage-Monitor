@@ -13,14 +13,11 @@
 - 실시간 호가(매수 1호가/매도 1호가) 수집 (WebSocket)
 - 거래소 간 스프레드(%) 자동 계산
 - 최소 수익률·코인 필터
-- 입출금 상태·네트워크 정보 표시
-- Gate.io 대출 가능 여부·금리 표시
-- 알림: 소리, 텔레그램
+- 알림: 소리
 
 ## 요구사항
 
 - Python 3.10+
-- (선택) 텔레그램 봇 토큰·채팅 ID
 
 ## 설치 및 실행
 
@@ -37,9 +34,13 @@ pip install -r requirements.txt
 copy .env.example .env
 # .env 편집
 
-# 실행
+# 실행 — 데스크톱 창으로 실행 (기본)
 python -m crypto_arbitrage_monitor
 ```
+
+- **데스크톱 GUI**(기본): 실행 시 모니터링 창이 열립니다. 창을 닫으면 종료됩니다.
+- **콘솔 모드**: 터미널에서 테이블 출력만 사용하려면 `USE_CONSOLE=1` 로 실행하세요.  
+  `set USE_CONSOLE=1` (Windows) / `USE_CONSOLE=1 python -m crypto_arbitrage_monitor` (Linux/macOS)
 
 ## 프로젝트 구조
 
@@ -48,11 +49,11 @@ src/crypto_arbitrage_monitor/
   __init__.py
   config.py           # 설정
   logging_config.py   # 로깅
-  models.py           # 데이터 모델 (예정)
-  exchanges/          # 거래소 WebSocket (예정)
-  spread/             # 스프레드 계산 (예정)
-  alerts/             # 알림 (예정)
-  ui/                 # UI (예정)
+  models.py           # 데이터 모델
+  exchanges/          # 거래소 WebSocket
+  spread/             # 스프레드 계산
+  alerts/             # 알림
+  ui/                 # UI (데스크톱 + 콘솔)
 ```
 
 ## 라이선스

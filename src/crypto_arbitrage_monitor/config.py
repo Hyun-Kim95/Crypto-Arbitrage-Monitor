@@ -3,11 +3,45 @@
 - 최소 수익률, 알림 설정, 모니터링 코인 등
 """
 
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+@dataclass
+class RuntimeSettings:
+    """GUI 등에서 수정한 조건으로 모니터링할 때 사용하는 설정 (Settings와 동일 필드)."""
+
+    min_spread_percent: float = 0.5
+    min_trade_amount_usd: Optional[float] = None
+    usd_krw_rate: float = 1300.0
+    usd_krw_auto: bool = True
+    usd_krw_refresh_sec: int = 30
+    monitor_symbols: Optional[List[str]] = None
+    alert_sound_enabled: bool = True
+    log_level: str = "INFO"
+    log_dir: Optional[Path] = None
+
+    def __post_init__(self) -> None:
+        if self.monitor_symbols is None:
+            self.monitor_symbols = []
+
+    @classmethod
+    def from_settings(cls, s: "Settings") -> "RuntimeSettings":
+        return cls(
+            min_spread_percent=s.min_spread_percent,
+            min_trade_amount_usd=s.min_trade_amount_usd,
+            usd_krw_rate=s.usd_krw_rate,
+            usd_krw_auto=s.usd_krw_auto,
+            usd_krw_refresh_sec=s.usd_krw_refresh_sec,
+            monitor_symbols=list(s.monitor_symbols) if s.monitor_symbols else [],
+            alert_sound_enabled=s.alert_sound_enabled,
+            log_level=s.log_level,
+            log_dir=s.log_dir,
+        )
 
 
 class Settings(BaseSettings):
@@ -32,9 +66,6 @@ class Settings(BaseSettings):
 
     # 알림
     alert_sound_enabled: bool = Field(default=True, description="소리 알림 사용 여부")
-    telegram_enabled: bool = Field(default=False, description="텔레그램 알림 사용 여부")
-    telegram_bot_token: str = Field(default="", description="텔레그램 봇 토큰")
-    telegram_chat_id: str = Field(default="", description="텔레그램 채팅 ID")
 
     # 로깅
     log_level: str = Field(default="INFO", description="로그 레벨")

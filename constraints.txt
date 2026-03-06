@@ -1,0 +1,2 @@
+# Rust DLL 오류 회피: cryptography 41 미만으로 고정 (Windows 일부 환경용)
+cryptography<41

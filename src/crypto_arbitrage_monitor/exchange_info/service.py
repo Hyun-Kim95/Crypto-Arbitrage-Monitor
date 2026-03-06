@@ -16,7 +16,14 @@ try:
     import ccxt  # type: ignore
 except Exception as exc:  # ImportError, DLL 문제 등 모두 포함
     ccxt = None  # type: ignore
-    logger.warning("ccxt 로드 실패. 입출금/네트워크 정보 기능이 비활성화됩니다: %s", exc)
+    err_str = str(exc)
+    if "_rust" in err_str or "DLL" in err_str or "프로시저" in err_str:
+        logger.info(
+            "이 PC에서는 입출금/네트워크 정보 기능을 사용할 수 없습니다. "
+            "호가·스프레드·알림은 정상 동작합니다."
+        )
+    else:
+        logger.info("ccxt 미사용. 입출금/네트워크 정보 기능 비활성화: %s", exc)
 
 
 EXCHANGE_CCXT_ID = {

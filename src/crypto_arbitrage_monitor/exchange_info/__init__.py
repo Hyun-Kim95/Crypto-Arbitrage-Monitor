@@ -3,6 +3,4 @@
 """
 
 from crypto_arbitrage_monitor.exchange_info.types import NetworkInfo, WithdrawDepositStatus
-from crypto_arbitrage_monitor.exchange_info.service import ExchangeInfoService
-
-__all__ = ["NetworkInfo", "WithdrawDepositStatus", "ExchangeInfoService"]
+__all__ = ["NetworkInfo", "WithdrawDepositStatus"]
