@@ -225,12 +225,8 @@ class DesktopMonitor:
                 self._tree.column(col, width=110, minwidth=80)
             else:
                 self._tree.column(col, width=90, minwidth=60)
-        scroll_y = ttk.Scrollbar(table_frame, orient="vertical", command=self._tree.yview)
-        scroll_x = ttk.Scrollbar(table_frame, orient="horizontal", command=self._tree.xview)
-        self._tree.configure(yscrollcommand=scroll_y.set, xscrollcommand=scroll_x.set)
-        self._tree.pack(side="left", fill="both", expand=True)
-        scroll_y.pack(side="right", fill="y")
-        scroll_x.pack(side="bottom", fill="x")
+        # 스크롤바는 사용하지 않고, 테이블 영역 내에서만 표시
+        self._tree.pack(fill="both", expand=True)
 
         # 텔레그램 관련 입력은 제거됨
 
